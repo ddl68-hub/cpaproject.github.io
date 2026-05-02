@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎀 CPA Coquette Prep | 10 Qs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --soft-pink: #fdf0f0;
+            --dusty-rose: #e19b9b;
+            --pearl: #ffffff;
+            --lace-gray: #5e6a71;
+            --border-lace: #fadadd;
+        }
+
+        body {
+            background-color: var(--soft-pink);
+            background-image: radial-gradient(var(--dusty-rose) 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            font-family: 'Inter', sans-serif;
+            color: var(--lace-gray);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-wrapper { width: 100%; max-width: 700px; padding: 40px 20px; }
+
+        header { text-align: center; margin-bottom: 30px; }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--dusty-rose);
+            font-size: 2.5rem;
+            margin: 10px 0;
+        }
+
+        .status-ribbon {
+            background: var(--pearl);
+            padding: 8px 24px;
+            border-radius: 50px;
+            border: 2px solid var(--border-lace);
+            font-weight: 600;
+            color: var(--dusty-rose);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.94);
+            border-radius: 40px;
+            padding: 40px;
+            border: 6px double var(--border-lace);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+        }
+
+        .tag {
+            background: var(--soft-pink);
+            color: var(--dusty-rose);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid var(--border-lace);
+            margin-right: 5px;
+        }
+
+        #question-text { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 20px 0; color: #333; }
+
+        .option-btn {
+            background: var(--pearl);
+            border: 1px solid var(--border-lace);
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .option-btn:hover { border-color: var(--dusty-rose); transform: translateX(5px); }
+        .correct { background: #f0fff4; border-color: #a8dadc; }
+        .wrong { background: #fff5f5; border-color: var(--dusty-rose); }
+
+        .feedback { margin-top: 20px; padding: 15px; background: var(--soft-pink); border-radius: 15px; border: 1px dashed var(--dusty-rose); }
+
+        .btn-next {
+            background: var(--dusty-rose);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+    <header>
+        <h1 class="main-title">CPA Quick Study</h1>
+        <div class="status-ribbon">Progress: <span id="q-num">1</span>/10 🎀</div>
+    </header>
+
+    <main class="glass-card">
+        <div id="tags"><span class="tag" id="tag-sec">SEC</span></div>
+        <h2 id="question-text">Loading...</h2>
+        <div id="options-container"></div>
+        <div id="feedback-panel" class="feedback hidden">
+            <p><strong>Rationale:</strong> <span id="rationale-text"></span></p>
+            <button class="btn-next" onclick="handleNext()">Next ౨ৎ</button>
+        </div>
+    </main>
+</div>
+
+<script>
+    const questions = [
+        { s: "FAR", q: "What is the primary objective of financial reporting?", o: ["Tax compliance", "Decision usefulness", "Internal control", "Budgeting"], a: 1, r: "FASB concepts focus on providing useful information for investors and creditors." },
+        { s: "AUD", q: "Which risk is the susceptibility of an assertion to material misstatement assuming no controls?", o: ["Control Risk", "Detection Risk", "Inherent Risk", "Audit Risk"], a: 2, r: "Inherent risk exists before considering any internal controls." },
+        { s: "REG", q: "Which entity provides the most protection against personal liability?", o: ["General Partnership", "Sole Proprietorship", "C Corporation", "Joint Venture"], a: 2, r: "Corporations offer limited liability protection to shareholders." },
+        { s: "FAR", q: "Under the allowance method, writing off an uncollectible account:", o: ["Decreases Net Income", "Decreases Assets", "Has no effect on Net Income", "Increases Expenses"], a: 2, r: "Writing off a specific account reduces both Accounts Receivable and the Allowance, resulting in no net change." },
+        { s: "AUD", q: "Which of the following is a 'standard' unmodified audit opinion?", o: ["Qualified", "Adverse", "Clean", "Disclaimer"], a: 2, r: "A 'Clean' opinion is formally called an Unmodified opinion." },
+        { s: "BAR", q: "A high operating leverage means a company has:", o: ["High variable costs", "High fixed costs", "Low debt", "High inventory turnover"], a: 1, r: "Operating leverage is the ratio of fixed costs to variable costs." },
+        { s: "REG", q: "What is the standard deduction for a single taxpayer (2024 base)?", o: ["$10,000", "$14,600", "$12,000", "$29,200"], a: 1, r: "The 2024 standard deduction for single filers is $14,600." },
+        { s: "ISC", q: "Which control is designed to fix a problem after it occurred?", o: ["Preventive", "Detective", "Corrective", "Directive"], a: 2, r: "Corrective controls rectify issues that have been identified." },
+        { s: "FAR", q: "Which is a characteristic of a liability?", o: ["Future sacrifice", "Past event", "Present obligation", "All of the above"], a: 3, r: "Liabilities involve all three: past events, present obligations, and future sacrifices." },
+        { s: "AUD", q: "Internal auditors primarily report to:", o: ["IRS", "SEC", "The Audit Committee", "The CFO"], a: 2, r: "For independence, internal audit should report to the Board's Audit Committee." }
+    ];
+
+    let current = 0;
+
+    function load() {
+        const q = questions[current];
+        document.getElementById('tag-sec').innerText = q.s;
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('question-text').innerText = q.q;
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        q.o.forEach((opt, i) => {
+            const b = document.createElement('button');
+            b.className = 'option-btn';
+            b.innerText = opt;
+            b.onclick = () => {
+                document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+                if(i === q.a) { 
+                    b.classList.add('correct'); 
+                    confetti({ particleCount: 80, spread: 50, colors: ['#e19b9b', '#fadadd'] });
+                } else { 
+                    b.classList.add('wrong'); 
+                    document.querySelectorAll('.option-btn')[q.a].classList.add('correct');
+                }
+                document.getElementById('rationale-text').innerText = q.r;
+                document.getElementById('feedback-panel').classList.remove('hidden');
+            };
+            container.appendChild(b);
+        });
+        document.getElementById('feedback-panel').classList.add('hidden');
+    }
+
+    function handleNext() {
+        current++;
+        if(current < 10) load();
+        else document.querySelector('.glass-card').innerHTML = "<h2>Study Session Complete 🎀</h2>";
+    }
+
+    load();
+</script>
+</body>
+</html>
